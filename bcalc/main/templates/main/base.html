@@ -34,32 +34,33 @@
 </head>
 {% load static %}
 <body>
-    <header>
-        <nav class="uk-container uk-navbar-container" uk-navbar>
-            <div class="uk-navbar-left">
-                <ul class="uk-navbar-nav">
-                    <li><a href="{% url 'start' %}">Начать расчет</a></li>
-                    <li><a href="{% url 'parameters' %}">Параметры</a></li>
-                    <li><a href="{% url 'options' %}">Опции</a></li>
-                </ul>
+    <div class="wrapper">
+        <header>
+            <nav class="uk-container uk-navbar-container" uk-navbar>
+                <div class="uk-navbar-left">
+                    <ul class="uk-navbar-nav">
+                        <li><a href="{% url 'start' %}">Старт</a></li>
+                        <li><a href="{% url 'calc' %}">Расчет стоимости шкафа</a></li>
+                    </ul>
+                </div>
+                <div class="uk-navbar-right">
+                    <ul class="uk-navbar-nav">
+                        <li><a href="{% url 'about' %}">О компании</a></li>
+                        <li><a href="{% url 'contacts' %}">Контакты</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <main>
+            <div class="uk-container">
+                {% block content%}{% endblock %}
             </div>
-            <div class="uk-navbar-right">
-                <ul class="uk-navbar-nav">
-                    <li><a href="{% url 'about' %}">О компании</a></li>
-                    <li><a href="{% url 'contacts' %}">Контакты</a></li>
-                </ul>
+        </main>
+        <footer>
+            <div class="uk-container">
+                <a href="admin">Admin</a>
             </div>
-        </nav>
-    </header>
-    <main>
-        <div class="uk-container">
-            {% block content%}{% endblock %}
-        </div>
-    </main>
-    <footer>
-        <div class="uk-container">
-            <a href="admin">Admin</a>
-        </div>
-    </footer>
+        </footer>
+    </div>
 </body>
 </html>

@@ -6,18 +6,14 @@ from tinymce.models import HTMLField
 class Parameter(models.Model):
     name = models.CharField('Название', max_length=80, null=False, blank=False)
     slug = models.SlugField('Ссылка', max_length=255, unique=True, db_index=True)
-    round_image = models.ImageField(
-        verbose_name='Круглая картинка для навигации',
-        upload_to='images/',
-        null=True, blank=True,
-    )
+    coefficient = models.DecimalField('Коэфф для расчета ', decimal_places=2, max_digits=3, null=True, blank=True)
     #default_option =
 
     def __str__(self):
         return self.name
 
 
-class Option(models.Model):
+class Dimensions(models.Model):
     name = models.CharField('Название', max_length=80, null=False, blank=False)
     image = models.ImageField(
         verbose_name='картинка для слайдера',

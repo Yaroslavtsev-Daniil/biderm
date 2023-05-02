@@ -5,12 +5,8 @@ def start(request):
     return render(request, 'calc/start.html')
 
 
-def parameters(request):
-    return render(request, 'calc/parameters.html')
-
-
-def options(request):
-    return render(request, 'calc/options.html')
+def calc(request):
+    return render(request, 'calc/calc.html')
 
 
 def result(request):
