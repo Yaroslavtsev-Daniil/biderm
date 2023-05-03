@@ -3,44 +3,76 @@ from django.db import models
 from tinymce.models import HTMLField
 
 
-class Parameter(models.Model):
-    name = models.CharField('Название', max_length=80, null=False, blank=False)
-    slug = models.SlugField('Ссылка', max_length=255, unique=True, db_index=True)
-    coefficient = models.DecimalField('Коэфф для расчета ', decimal_places=2, max_digits=3, null=True, blank=True)
-    #default_option =
+# def get_self_id(OptionsCategory):
+#     return OptionsCategory.id
+# Попытка выводить для выбора значения по умолчанию только тех опций, что привязаны к категории.
+
+
+class OptionsCategory(models.Model):
+    title = models.CharField('Название', max_length=80, null=False, blank=False)
+    sort = models.IntegerField('Позиция в списке', null=True, blank=True)
+    subtitle = models.TextField('Подзаголовок', null=True, blank=True)
+
+    default_value = models.ForeignKey(
+        'Option',
+        on_delete=models.SET_NULL,
+        # limit_choices_to={'category': OptionsCategory.pk},
+        null=True, blank=True
+    )
 
     def __str__(self):
-        return self.name
+        return self.title
+    #
+    # def get_self_id(self):
+    #     return self.pk
 
 
-class Dimensions(models.Model):
-    name = models.CharField('Название', max_length=80, null=False, blank=False)
+class Option(models.Model):
+    title = models.CharField('Название', max_length=80, null=False, blank=False)
+    sort = models.IntegerField('Позиция в списке', null=True, blank=True)
+    subtitle = models.TextField('Подзаголовок', null=True, blank=True)
+    cost = models.IntegerField('Цена за м2 ', null=True, blank=True)
     image = models.ImageField(
         verbose_name='картинка для слайдера',
         upload_to='images/options/',
         null=True, blank=True,
     )
-    title = models.CharField('Мета title', max_length=150, null=True, blank=False)
-    description = HTMLField('Описание', null=True, blank=True)
-    coefficient = models.DecimalField('Коэфф для расчета ', decimal_places=2, max_digits=3, null=True, blank=True)
-
-    # Relations
-    Parameter = models.ForeignKey('Parameter', on_delete=models.SET_NULL, null=True, blank=True)
+    category = models.ManyToManyField(
+        OptionsCategory,
+        verbose_name=u'В категории')
 
     def __str__(self):
-        return self.name
+        return self.title
 
 
 class Element(models.Model):
-    name = models.CharField('Название', max_length=80, null=False, blank=False)
+    title = models.CharField('Название', max_length=80, null=False, blank=False)
+    sort = models.IntegerField('Позиция в списке', null=True, blank=True)
+    subtitle = models.TextField('Подзаголовок', null=True, blank=True)
     image = models.ImageField(
-        verbose_name='картинка',
+        verbose_name='картинка для карточки элемента',
         upload_to='images/elements/',
         null=True, blank=True,
     )
-    title = models.CharField('Мета title', max_length=150, null=True, blank=False)
-    description = HTMLField('Описание', null=True, blank=True)
-    coefficient = models.DecimalField('Коэфф для расчета ', decimal_places=2, max_digits=3, null=True, blank=True)
+
+    coefficient = models.DecimalField(
+        'Коэфф для расчета ',
+        default=1.00, decimal_places=2, max_digits=3,
+        null=False, blank=False
+    )
 
     def __str__(self):
-        return self.name
+        return self.title
+
+
+# class Parameter(models.Model):
+#     title = models.CharField('Название', max_length=80, null=False, blank=False)
+#
+#     value = models.DecimalField('Значение, мм', decimal_places=0, max_digits=4, null=True, blank=True)
+#     default_value = models.DecimalField('Значение по умолчанию, мм', decimal_places=0, max_digits=4, null=True, blank=True)
+#     # Relations
+#     Parameter = models.ForeignKey('Parameter', on_delete=models.SET_NULL, null=True, blank=True)
+#
+#     def __str__(self):
+#         return self.name
+
