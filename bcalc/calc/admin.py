@@ -18,6 +18,7 @@ class OptionAdmin(admin.ModelAdmin):
     list_editable = [
         'subtitle', 'cost', 'sort',
     ]
+    list_filter = ['category']
 
 
 class ElementAdmin(admin.ModelAdmin):

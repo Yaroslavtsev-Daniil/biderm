@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from .models import OptionsCategory, Option, Element
 
 
 def start(request):
@@ -6,7 +7,14 @@ def start(request):
 
 
 def calc(request):
-    return render(request, 'calc/calc.html')
+    categories = OptionsCategory.objects.all()
+    options = Option.objects.all()
+    elements = Element.objects.all()
+    return render(request, 'calc/calc.html', {
+        'categories': categories,
+        'options': options,
+        'elements': elements,
+    })
 
 
 def result(request):

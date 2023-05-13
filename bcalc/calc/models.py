@@ -22,6 +22,10 @@ class OptionsCategory(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_options_list(self):
+        options_list = Option.objects.filter(category=self)
+        return options_list
     #
     # def get_self_id(self):
     #     return self.pk
@@ -31,7 +35,7 @@ class Option(models.Model):
     title = models.CharField('Название', max_length=80, null=False, blank=False)
     sort = models.IntegerField('Позиция в списке', null=True, blank=True)
     subtitle = models.TextField('Подзаголовок', null=True, blank=True)
-    cost = models.IntegerField('Цена за м2 ', null=True, blank=True)
+    cost = models.IntegerField('Цена ', null=True, blank=True)
     image = models.ImageField(
         verbose_name='картинка для слайдера',
         upload_to='images/options/',
