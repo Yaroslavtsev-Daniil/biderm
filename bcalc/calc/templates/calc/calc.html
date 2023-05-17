@@ -11,7 +11,7 @@
     {% for category in categories %}
     <li>
         <a class="uk-accordion-title" href="#">{{ category.title }}</a>
-        <div id="category_value_{{ category.id }}">Опция не выбрана</div>
+        <div id="category_value_{{ category.slug }}">{{ category.default_value.title }}</div>
         <div class="uk-accordion-content">
             <div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1" uk-slider>
                     <ul class="uk-slider-items uk-grid">
@@ -21,10 +21,11 @@
                                 <img src="{{ option.image.url }}"
                                      width="1800" height="1200" alt="">
                                 <div class="uk-position-center uk-text-center">
-                                    <h2 uk-slider-parallax="x: 100,-100">{{ option.title }}</h2>
-                                    <button
-                                            class="uk-button uk-button-primary uk-button-small"
-                                            onclick="set_category_value()">Выбрать</button>
+                                    <h2 id="{{ option.slug }}_{{ category.slug }}_title"
+                                        uk-slider-parallax="x: 100,-100">
+                                        {{ option.title }}</h2>
+                                    <button onclick="{{ option.slug }}_{{ category.slug }}_button()"
+                                            class="uk-button uk-button-primary uk-button-small">Выбрать</button>
                                 </div>
                                 <!--p style="color: black" uk-slider-parallax="x: 200,-200">{{ option.subtitle }}</p-->
                             </div>
@@ -43,58 +44,238 @@
 
 <div class="uk-section">
     <h2>Габаритные размеры</h2>
-    <div class="uk-container uk-column-1-2@s">
+    <div class="uk-container uk-column-1-3@s">
         <form class="uk-form-stacked">
-            <img src="{% static 'images/empty_box.jpg' %}" alt="">
+            <img src="{% static 'images/empty_box.jpg' %}" style="height:180px" alt="">
             <div class="uk-margin">
-                <label class="uk-form-label" for="form-stacked-text">Ширина</label>
+                <label class="uk-form-label" for="dimentions_width">Ширина, мм</label>
                 <div class="uk-form-controls">
-                    <input class="uk-input" id="form-stacked-text" type="text" placeholder="Some text.1..">
+                    <input
+                            class="uk-input" id="dimentions_width" type="text"
+                            value="{{ default_dimentions.width }}"
+                            onchange="width_value()">
                 </div>
             </div>
             <div class="uk-margin">
-                <label class="uk-form-label" for="form-stacked-text">Высота</label>
+                <label class="uk-form-label" for="dimentions_height">Высота, мм</label>
                 <div class="uk-form-controls">
-                    <input class="uk-input" id="form-stacked-text" type="text" placeholder="Some text.2..">
+                    <input
+                            class="uk-input" id="dimentions_height" type="text"
+                            value="{{ default_dimentions.height }}"
+                            onchange="height_value()">
                 </div>
             </div>
             <div class="uk-margin">
-                <label class="uk-form-label" for="form-stacked-text">Глубина</label>
+                <label class="uk-form-label" for="dimentions_depth">Глубина, мм</label>
                 <div class="uk-form-controls">
-                    <input class="uk-input" id="form-stacked-text" type="text" placeholder="Some text..3.">
+                    <input
+                            class="uk-input" id="dimentions_depth" type="text"
+                            value="{{ default_dimentions.depth }}"
+                            onchange="depth_value()">
+                </div>
+            </div>
+            <div class="uk-margin">
+                <label class="uk-form-label" for="dimentions_shelf_height">Высота полок, мм</label>
+                <div class="uk-form-controls">
+                    <input
+                            class="uk-input" id="dimentions_shelf_height" type="text"
+                            value="{{ default_dimentions.shelf_height }}"
+                            onchange="shelf_height_value()">
                 </div>
             </div>
         </form>
     </div>
 </div>
-<h2>Ориентировочная стоимость: <strong id="total">15000</strong></h2>
+<h2>Ориентировочная стоимость: <strong id="total1">15000</strong> рублей</h2>
 <div class="uk-section">
-    <h2>"Элементы"</h2>
+    <h2>Элементы</h2>
     <div class="uk-container">
         <div class="elements uk-grid">
             {% for element in elements %}
-            <div class="uk-card uk-card-default element-card uk-width-1-4@m uk-width-1-3@s uk-width-1-2">
-                <div class="uk-card-media-top">
-                    <img src="{{ element.image.url }}" width="1800" height="1200" alt="">
+                <div class="uk-card uk-card-default element-card uk-width-1-4@m uk-width-1-3@s uk-width-1-2">
+                    <div class="uk-card-media-top">
+                        <img src="{{ element.image.url }}" alt="">
+                    </div>
+                    <div class="uk-card-body">
+                        <h3 class="uk-card-title">{{ element.title }}</h3>
+                        <p>{{ element.subtitle }}</p>
+                        <label class="checkbox-btn">
+                            <input type="checkbox">
+                            <span onclick="{{ element.slug }}_button()">Выбрать</span>
+                        </label>
+                    </div>
                 </div>
-                <div class="uk-card-body">
-                    <h3 class="uk-card-title">{{ element.title }}</h3>
-                    <p>{{ element.subtitle }}</p>
-                </div>
-            </div>
             {% endfor %}
         </div>
     </div>
 
 </div>
 
-<h2>Ориентировочная стоимость: <strong id="total">15000</strong></h2>
+<h2>Ориентировочная стоимость: <strong id="total2">15000</strong> рублей</h2>
 
 <script>
-    function set_category_value_1(){
-        var category_value = String(document.getElementById("num1").value);
-        document.getElementById("category_value_1").innerHTML = result;
+    /* Переменные категорий со стоимостью по умолчанию */
+    {% for category in categories %}
+        var {{ category.slug }}_cost = {{ category.default_value.cost }};
+    {% endfor %}
+
+    /* Переменные категорий со значением выбранной опции */
+    {% for category in categories %}
+        var {{ category.slug }} = "{{ category.default_value.title }}";
+    {% endfor %}
+
+    /* Изменение значений категорий при выборе опций*/
+    {% for category in categories %}
+        {% for option in category.get_options_list %}
+            function {{ option.slug }}_{{ category.slug }}_button() {
+                var category_value = document.getElementById("{{ option.slug }}_{{ category.slug }}_title").textContent;
+                document.getElementById("category_value_{{ category.slug }}").innerHTML = category_value;
+                {{ category.slug }} = "{{ option.title }}";
+                {{ category.slug }}_cost = {{ option.cost }};
+                calculate();
+            }
+        {% endfor %}
+    {% endfor %}
+
+    /*Габариты*/
+    var width = default_width = {{ default_dimentions.width }}
+    var height = default_height = {{ default_dimentions.height }}
+    var depth = default_depth = {{ default_dimentions.depth }}
+    var shelf_height = default_shelf_height = {{ default_dimentions.shelf_height }}
+
+    /* Изменение переменных габаритов при изменении инпутов*/
+    function width_value() {
+        width = document.getElementById("dimentions_width").value;
+        calculate();
     }
+
+    function height_value() {
+        height = document.getElementById("dimentions_height").value;
+        calculate();
+    }
+
+    function depth_value() {
+        depth = document.getElementById("dimentions_depth").value;
+        calculate();
+    }
+
+    function shelf_height_value() {
+        shelf_height = document.getElementById("dimentions_shelf_height").value;
+        calculate();
+    }
+
+    /*Переменные состояния выбора элементов*/
+    {% for element in elements %}
+    var {{ element.slug }}_state = false;
+    {% endfor %}
+
+    /*Переменные значения влияния элементов*/
+    {% for element in elements %}
+    var {{ element.slug }};
+    {% endfor %}
+
+    /* Изменение состояния выбора элементов при взаимодействии с ними*/
+    {% for element in elements %}
+        function {{ element.slug }}_button() {
+            (!{{ element.slug }}_state) ? {{ element.slug }}_state = true : {{ element.slug }}_state = false;
+            calculate();
+        }
+    {% endfor %}
+
+    var total;
+
+    /* =====  РАСЧЕТЫ  ===== */
+
+    /* Итог */
+    function calculate() {
+        calc_middle();
+        total = middle;
+        apply_elements();
+        document.getElementById("total1").innerHTML = total;
+        document.getElementById("total2").innerHTML = total;
+    }
+
+    /* Учет элементов */
+
+    /* Перебор элементов, расчет их влияния и учет в общей стоимости */
+    function apply_elements() {
+        calc_sqr_m_inside_cost();
+        {% for element in elements %}
+            if ({{ element.slug }}_state) {
+                {{ element.slug }} = {{ element.coefficient }} * sqr_m_inside_cost - sqr_m_inside_cost;
+                total = Math.round(total + {{ element.slug }});
+            }
+        {% endfor %}
+    }
+
+    /* Промежуточный расчет стоимости квадратного метра внутрянки */
+    var sqr_m_inside_cost;
+    function calc_sqr_m_inside_cost() {
+        /*calc_shelfs();*/
+        var w = width / 1000;
+        var h = height / 1000;
+        sqr_m_inside_cost = shelfs / ( w * h );
+    }
+
+    /* Подитог без элементов */
+    var middle;
+    function calc_middle() {
+        calc_corpus();
+        calc_shelfs();
+        calc_doors();
+        calc_furniture();
+        middle = Math.round(corpus + shelfs + doors + furniture);
+    }
+
+    /* Расчет фурнитуры */
+    var furniture;
+    function calc_furniture() {
+        var w = width / 1000;
+        var h = height / 1000;
+        var dw = default_width / 1000;
+        var dh = default_height / 1000;
+
+        var f_cost = furniture_cost;
+
+        furniture = (w / dw) * (h / dh) * f_cost;
+    }
+
+    /* Расчет дверей */
+    var doors;
+    function calc_doors() {
+        var w = width / 1000;
+        var h = height / 1000;
+        var d_cost = doors_cost;
+        var ds_cost = doorsystem_cost;
+
+        doors = w * ds_cost + w * h * d_cost;
+    }
+
+    /* Расчет полок */
+    var shelfs;
+    function calc_shelfs() {
+        var w = width / 1000;
+        var h = height / 1000;
+        var d = depth / 1000;
+        var sh = shelf_height / 1000;
+        var cost = corpus_cost;
+
+        shelfs = ((h/sh)-1) * w * d * cost;
+    }
+
+    /* Расчет корпуса */
+    var corpus;
+    function calc_corpus() {
+        var w = width / 1000;
+        var h = height / 1000;
+        var d = depth / 1000;
+        var cost = corpus_cost;
+
+        corpus = (2 * ( w + h ) * d * cost);
+    }
+
+    document.addEventListener("DOMContentLoaded", calculate());
+
 </script>
 
 {% endblock%}

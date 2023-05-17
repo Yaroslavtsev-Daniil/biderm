@@ -10,6 +10,7 @@ from tinymce.models import HTMLField
 
 class OptionsCategory(models.Model):
     title = models.CharField('Название', max_length=80, null=False, blank=False)
+    slug = models.SlugField(max_length=15, null=True, blank=True)
     sort = models.IntegerField('Позиция в списке', null=True, blank=True)
     subtitle = models.TextField('Подзаголовок', null=True, blank=True)
 
@@ -33,6 +34,7 @@ class OptionsCategory(models.Model):
 
 class Option(models.Model):
     title = models.CharField('Название', max_length=80, null=False, blank=False)
+    slug = models.SlugField(max_length=15, null=True, blank=True)
     sort = models.IntegerField('Позиция в списке', null=True, blank=True)
     subtitle = models.TextField('Подзаголовок', null=True, blank=True)
     cost = models.IntegerField('Цена ', null=True, blank=True)
@@ -51,6 +53,7 @@ class Option(models.Model):
 
 class Element(models.Model):
     title = models.CharField('Название', max_length=80, null=False, blank=False)
+    slug = models.SlugField(max_length=15, null=True, blank=True)
     sort = models.IntegerField('Позиция в списке', null=True, blank=True)
     subtitle = models.TextField('Подзаголовок', null=True, blank=True)
     image = models.ImageField(
@@ -69,14 +72,20 @@ class Element(models.Model):
         return self.title
 
 
-# class Parameter(models.Model):
-#     title = models.CharField('Название', max_length=80, null=False, blank=False)
-#
-#     value = models.DecimalField('Значение, мм', decimal_places=0, max_digits=4, null=True, blank=True)
-#     default_value = models.DecimalField('Значение по умолчанию, мм', decimal_places=0, max_digits=4, null=True, blank=True)
-#     # Relations
-#     Parameter = models.ForeignKey('Parameter', on_delete=models.SET_NULL, null=True, blank=True)
-#
-#     def __str__(self):
-#         return self.name
+class BasicDimentions(models.Model):
+    title = "Базовые габариты"
+    width = models.IntegerField('Ширина', null=True, blank=True)
+    height = models.IntegerField('Высота', null=True, blank=True)
+    DEPTH_CHOICES = [
+        (500, '500'),
+        (600, '600'),
+    ]
+    depth = models.IntegerField(
+        'Глубина', choices=DEPTH_CHOICES,
+        null=True, blank=True)
+    shelf_height = models.IntegerField('Высота полок', null=True, blank=True)
+
+    def __str__(self):
+        return self.title
+
 

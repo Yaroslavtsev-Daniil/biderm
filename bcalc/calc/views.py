@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import OptionsCategory, Option, Element
+from .models import OptionsCategory, Option, Element, BasicDimentions
 
 
 def start(request):
@@ -10,10 +10,12 @@ def calc(request):
     categories = OptionsCategory.objects.all()
     options = Option.objects.all()
     elements = Element.objects.all()
+    default_dimentions = BasicDimentions.objects.get(pk=1)
     return render(request, 'calc/calc.html', {
         'categories': categories,
         'options': options,
         'elements': elements,
+        'default_dimentions': default_dimentions,
     })
 
 
