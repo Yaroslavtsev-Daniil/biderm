@@ -3,4 +3,4 @@ settings.py
 .idea/
 *.pyc
 *__pycache__/
-settings.py
+db.sqlite3

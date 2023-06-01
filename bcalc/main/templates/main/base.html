@@ -44,7 +44,6 @@
                 </div>
                 <div class="uk-navbar-right">
                     <ul class="uk-navbar-nav">
-                        <li><a href="{% url 'about' %}">О компании</a></li>
                         <li><a href="{% url 'contacts' %}">Контакты</a></li>
                     </ul>
                 </div>
@@ -55,9 +54,8 @@
                 {% block content%}{% endblock %}
             </div>
         </main>
-        <footer>
+        <footer style="height: 200px;">
             <div class="uk-container">
-                <a href="admin">Admin</a>
             </div>
         </footer>
     </div>
